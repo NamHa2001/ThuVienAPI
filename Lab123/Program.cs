@@ -1,4 +1,5 @@
-
+using Lab123.Data;
+using Microsoft.EntityFrameworkCore;
 namespace Lab123
 {
     public class Program
@@ -13,6 +14,11 @@ namespace Lab123
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            //register DB
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                    options.UseSqlServer(connectionString));
 
             var app = builder.Build();
 
