@@ -22,6 +22,8 @@ namespace ThuVien_API
             builder.Services.AddDbContext<AppDbContext>(options =>
                     options.UseSqlServer(connectionString));
             builder.Services.AddScoped<IBookRepository, SQLBookRepository>();
+            builder.Services.AddScoped<IAuthorRepository, SQLAuthorRepository>();
+
 
             var app = builder.Build();
 
