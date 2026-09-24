@@ -1,11 +1,11 @@
-﻿using Lab123.Data;
+﻿using ThuVien_API.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Lab123.Models.DTO;
+using ThuVien_API.Models.DTO;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace Lab123.Controllers
+namespace ThuVien_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -19,36 +19,36 @@ namespace Lab123.Controllers
 
         //GET http://localhost:port/api/get-all-books
         [HttpGet("get-all-books")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             // var allBooksDomain = _dbContext.Books.ToList();
             //Get Data From Database -Domain Model
             var allBooksDomain = _dbContext.Books;
             //Map domain models to DTOs
-            var allBooksDTO = allBooksDomain.Select(Books => new BookWithAuthorAndPublisherDTO()
+            var allBooksDTO = await allBooksDomain.Select(Books => new BookWithAuthorAndPublisherDTO()
             {
                 Id = Books.Id,
                 Title = Books.Title,
                 Description = Books.Description,
                 IsRead = Books.IsRead,
-                DateRead = Books.IsRead ? Books.DateRead.Value : null,               
+                DateRead = Books.IsRead ? Books.DateRead.Value : null,
                 Rate = Books.IsRead ? Books.Rate.Value : null,
                 Genre = Books.Genre,
                 CoverUrl = Books.CoverUrl,
                 PublisherName = Books.Publisher.Name,
                 AuthorNames = Books.Book_Authors.Select(n => n.Author.FullName).ToList()
-            }).ToList();
+            }).ToListAsync();
             //return DTOs
             return Ok(allBooksDTO);
         }
 
         [HttpGet]
         [Route("get-book-by-id/{id:int}")]
-        public IActionResult GetBookById([FromRoute] int id)
+        public async Task<IActionResult> GetBookById([FromRoute] int id)
         {
-            //get bookDomain object from DB 
-            var bookDomain = _dbContext.Books.Include(b => b.Publisher).Include(b =>
-            b.Book_Authors).ThenInclude(ba => ba.Author).FirstOrDefault(b => b.Id == id); ;
+            //get bookDomain object from DB
+            var bookDomain = await _dbContext.Books.Include(b => b.Publisher).Include(b =>
+            b.Book_Authors).ThenInclude(ba => ba.Author).FirstOrDefaultAsync(b => b.Id == id); ;
             if (bookDomain == null)
             {
                 return NotFound();
@@ -73,10 +73,10 @@ namespace Lab123.Controllers
         }
 
         [HttpPost("add-book")]
-        public IActionResult AddBook([FromBody] AddBookRequestDTO addBookRequestDTO)
+        public async Task<IActionResult> AddBook([FromBody] AddBookRequestDTO addBookRequestDTO)
         {
             // check if publisher exists or not
-            var publisherDomain = _dbContext.Publishers.FirstOrDefault(x => x.Id ==
+            var publisherDomain = await _dbContext.Publishers.FirstOrDefaultAsync(x => x.Id ==
             addBookRequestDTO.PublisherID);
             if (publisherDomain == null)
             {
@@ -96,11 +96,11 @@ namespace Lab123.Controllers
                 PublisherID = publisherDomain.Id
             };
             _dbContext.Books.Add(bookDomain);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
             // check authors if they exist and then add to Book_Author table
             foreach (var authorId in addBookRequestDTO.AuthorIds)
             {
-                var authorDomain = _dbContext.Authors.FirstOrDefault(x => x.Id == authorId);
+                var authorDomain = await _dbContext.Authors.FirstOrDefaultAsync(x => x.Id == authorId);
                 if (authorDomain == null)
                 {
                     return NotFound(new { message = "Không tìm thấy tác giả" });
@@ -111,15 +111,15 @@ namespace Lab123.Controllers
                     AuthorId = authorDomain.Id
                 };
                 _dbContext.Books_Authors.Add(bookAuthorDomain);
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
             }
             return Ok();
         }
 
         [HttpPut("update-book-by-id/{id:int}")]
-        public IActionResult UpdateBookById(int id, [FromBody] AddBookRequestDTO addBookRequestDTO)
+        public async Task<IActionResult> UpdateBookById(int id, [FromBody] AddBookRequestDTO addBookRequestDTO)
         {
-            var bookDomain = _dbContext.Books.FirstOrDefault(x => x.Id == id);
+            var bookDomain = await _dbContext.Books.FirstOrDefaultAsync(x => x.Id == id);
             if (bookDomain != null)
             {
                 bookDomain.Title = addBookRequestDTO.Title;
@@ -131,17 +131,17 @@ namespace Lab123.Controllers
                 bookDomain.CoverUrl = addBookRequestDTO.CoverUrl;
                 bookDomain.DateAdded = addBookRequestDTO.DateAdded;
                 bookDomain.PublisherID = addBookRequestDTO.PublisherID;
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
             }
-            var existingBookAuthors = _dbContext.Books_Authors.Where(x => x.BookId == id).ToList();
+            var existingBookAuthors = await _dbContext.Books_Authors.Where(x => x.BookId == id).ToListAsync();
             if (existingBookAuthors != null && existingBookAuthors.Count > 0)
             {
                 _dbContext.Books_Authors.RemoveRange(existingBookAuthors);
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
             }
             foreach (var authorId in addBookRequestDTO.AuthorIds)
             {
-                var authorDomain = _dbContext.Authors.FirstOrDefault(x => x.Id == authorId);
+                var authorDomain = await _dbContext.Authors.FirstOrDefaultAsync(x => x.Id == authorId);
                 if (authorDomain == null)
                 {
                     return NotFound();
@@ -152,27 +152,27 @@ namespace Lab123.Controllers
                     AuthorId = authorDomain.Id
                 };
                 _dbContext.Books_Authors.Add(bookAuthorDomain);
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
             }
             return Ok(addBookRequestDTO);
         }
 
         [HttpDelete("delete-book-by-id/{id:int}")]
-        public IActionResult DeleteBookById(int id)
+        public async Task<IActionResult> DeleteBookById(int id)
         {
-            var bookDomain = _dbContext.Books.FirstOrDefault(x => x.Id == id);
+            var bookDomain = await _dbContext.Books.FirstOrDefaultAsync(x => x.Id == id);
             if (bookDomain == null)
             {
                 return NotFound();
             }
-            var existingBookAuthors = _dbContext.Books_Authors.Where(x => x.BookId == id).ToList();
+            var existingBookAuthors = await _dbContext.Books_Authors.Where(x => x.BookId == id).ToListAsync();
             if (existingBookAuthors != null && existingBookAuthors.Count > 0)
             {
                 _dbContext.Books_Authors.RemoveRange(existingBookAuthors);
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
             }
             _dbContext.Books.Remove(bookDomain);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
             return Ok(bookDomain);
         }
     }

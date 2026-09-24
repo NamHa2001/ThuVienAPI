@@ -1,6 +1,6 @@
-using Lab123.Data;
+using ThuVien_API.Data;
 using Microsoft.EntityFrameworkCore;
-namespace Lab123
+namespace ThuVien_API
 {
     public class Program
     {

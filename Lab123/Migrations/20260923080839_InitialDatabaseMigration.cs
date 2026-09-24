@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Lab123.Migrations
+namespace ThuVien_API.Migrations
 {
     /// <inheritdoc />
     public partial class InitialDatabaseMigration : Migration

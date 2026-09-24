@@ -1,6 +1,6 @@
-@Lab123_HostAddress = http://localhost:5264
+@ThuVien_API_HostAddress = http://localhost:5264
 
-GET {{Lab123_HostAddress}}/weatherforecast/
+GET {{ThuVien_API_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###

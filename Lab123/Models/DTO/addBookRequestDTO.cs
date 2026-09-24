@@ -1,5 +1,5 @@
-﻿using Lab123.Models.Domain;
-namespace Lab123.Models.DTO
+﻿using ThuVien_API.Models.Domain;
+namespace ThuVien_API.Models.DTO
 {
     public class AddBookRequestDTO
     {

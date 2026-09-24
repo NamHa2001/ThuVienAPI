@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Policy;
 
-namespace Lab123.Models.Domain
+namespace ThuVien_API.Models.Domain
 {
     public class Book
     {

@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
-using Lab123.Models.Domain;
+using ThuVien_API.Models.Domain;
 
-namespace Lab123.Data
+namespace ThuVien_API.Data
 {
     public class AppDbContext : DbContext
     {

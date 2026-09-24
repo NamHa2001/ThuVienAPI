@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Lab123.Models.Domain
+namespace ThuVien_API.Models.Domain
 {
     public class Publisher
     {
