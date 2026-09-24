@@ -51,5 +51,13 @@ namespace ThuVien_API.Controllers
             var authorDelete = _authorRepository.DeleteAuthorById(id);
             return Ok();
         }
+
+        [HttpGet("{id}/books")]
+        public IActionResult GetBooksByAuthorId(int id)
+        {
+            var booksOfAuthor = _authorRepository.GetBooksByAuthorId(id);
+            return Ok(booksOfAuthor);
+        }
+
     }
 }

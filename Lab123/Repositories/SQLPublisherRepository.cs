@@ -83,5 +83,26 @@ namespace ThuVien_API.Repositories
             }
             return null;
         }
+
+        public List<BookWithAuthorAndPublisherDTO> GetBooksByPublisherId(int id)
+        {
+            var booksOfPublisher = _dbContext.Books.Where(b => b.PublisherID == id)
+                .Select(book => new BookWithAuthorAndPublisherDTO()
+                {
+                    Id = book.Id,
+                    Title = book.Title,
+                    Description = book.Description,
+                    IsRead = book.IsRead,
+                    DateRead = book.DateRead,
+                    Rate = book.Rate,
+                    Genre = book.Genre,
+                    CoverUrl = book.CoverUrl,
+                    DateAdded = book.DateAdded,
+                    PublisherName = book.Publisher.Name,
+                    AuthorNames = book.Book_Authors.Select(n => n.Author.FullName).ToList()
+                }).ToList();
+            return booksOfPublisher;
+        }
+
     }
 }
