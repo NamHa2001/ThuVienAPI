@@ -23,12 +23,14 @@ namespace ThuVien_API.Controllers
         }
 
         [HttpGet("get-all-books")]
-        public IActionResult GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery)
+        public IActionResult GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
+         [FromQuery] string? sortBy, [FromQuery] bool isAscending)
         {
             // su dung reposity pattern
-            var allBooks = _bookRepository.GetAllBooks(filterOn, filterQuery);
+            var allBooks = _bookRepository.GetAllBooks(filterOn, filterQuery, sortBy, isAscending);
             return Ok(allBooks);
         }
+
 
 
         [HttpGet]
