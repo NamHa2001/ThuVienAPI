@@ -53,9 +53,19 @@ namespace ThuVien_API.Controllers
         [HttpPut("update-book-by-id/{id}")]
         public IActionResult UpdateBookById(int id, [FromBody] AddBookRequestDTO bookDTO)
         {
+            if (!_bookRepository.ExistsPublisherId(bookDTO.PublisherID))
+            {
+                ModelState.AddModelError(
+                    nameof(bookDTO.PublisherID),
+                    $"{nameof(bookDTO.PublisherID)} không tồn tại"
+                );
+                return BadRequest(ModelState);
+            }
+
             var updateBook = _bookRepository.UpdateBookById(id, bookDTO);
             return Ok(updateBook);
         }
+
 
         [HttpDelete("delete-book-by-id/{id}")]
         public IActionResult DeleteBookById(int id)
@@ -92,6 +102,13 @@ namespace ThuVien_API.Controllers
                 ModelState.AddModelError(
                     nameof(addBookRequestDTO.Rate),
                     $"{nameof(addBookRequestDTO.Rate)} cannot be less than 0 and more than 5"
+                );
+            }
+            if (!_bookRepository.ExistsPublisherId(addBookRequestDTO.PublisherID))
+            {
+                ModelState.AddModelError(
+                    nameof(addBookRequestDTO.PublisherID),
+                    $"{nameof(addBookRequestDTO.PublisherID)} không tồn tại"
                 );
             }
 

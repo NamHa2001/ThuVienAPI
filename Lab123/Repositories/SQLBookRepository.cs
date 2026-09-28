@@ -131,5 +131,10 @@ namespace ThuVien_API.Repositories
             }
             return bookDomain;
         }
+        public bool ExistsPublisherId(int publisherId)
+        {
+            return _dbContext.Publishers.Any(p => p.Id == publisherId);
+        }
+
     }
 }

@@ -10,5 +10,7 @@ namespace ThuVien_API.Repositories
         AddBookRequestDTO AddBook(AddBookRequestDTO addBookRequestDTO);
         AddBookRequestDTO? UpdateBookById(int id, AddBookRequestDTO bookDTO);
         Book? DeleteBookById(int id);
+        bool ExistsPublisherId(int publisherId);
+
     }
 }
