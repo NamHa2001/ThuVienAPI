@@ -7,6 +7,7 @@ namespace ThuVien_API.Models.DTO
     {
         [Required]
         [MinLength(10)]
+        [RegularExpression(@"^[\p{L}\p{N} ]+$", ErrorMessage = "Title chỉ được chứa chữ, số và khoảng trắng")]
         public string? Title { get; set; }
         public string? Description { get; set; }
         public bool IsRead { get; set; }
