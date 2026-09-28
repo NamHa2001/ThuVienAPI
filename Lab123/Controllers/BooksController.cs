@@ -37,11 +37,17 @@ namespace ThuVien_API.Controllers
             var bookWithIdDTO = _bookRepository.GetBookById(id);
             return Ok(bookWithIdDTO);
         }
+      
         [HttpPost("add-book")]
         public IActionResult AddBook([FromBody] AddBookRequestDTO addBookRequestDTO)
         {
+            if (!ValidateAddBook(addBookRequestDTO))
+            {
+                return BadRequest(ModelState);
+            }
+
             var bookAdd = _bookRepository.AddBook(addBookRequestDTO);
-            return Ok(bookAdd);
+                return Ok(bookAdd);        
         }
 
         [HttpPut("update-book-by-id/{id}")]
@@ -57,5 +63,46 @@ namespace ThuVien_API.Controllers
             var deleteBook = _bookRepository.DeleteBookById(id);
             return Ok(deleteBook);
         }
+
+        #region Private methods
+
+        private bool ValidateAddBook(AddBookRequestDTO addBookRequestDTO)
+        {
+            if (addBookRequestDTO == null)
+            {
+                ModelState.AddModelError(
+                    nameof(addBookRequestDTO),
+                    $"Please add book data"
+                );
+
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(addBookRequestDTO.Description))
+            {
+                ModelState.AddModelError(
+                    nameof(addBookRequestDTO.Description),
+                    $"{nameof(addBookRequestDTO.Description)} cannot be null"
+                );
+            }
+
+            if (addBookRequestDTO.Rate < 0 ||
+                addBookRequestDTO.Rate > 5)
+            {
+                ModelState.AddModelError(
+                    nameof(addBookRequestDTO.Rate),
+                    $"{nameof(addBookRequestDTO.Rate)} cannot be less than 0 and more than 5"
+                );
+            }
+
+            if (ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        #endregion
     }
 }
