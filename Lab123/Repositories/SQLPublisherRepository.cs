@@ -103,6 +103,12 @@ namespace ThuVien_API.Repositories
                 }).ToList();
             return booksOfPublisher;
         }
+        public bool ExistsPublisherName(string name, int? excludeId = null)
+        {
+            var trimmedName = name.Trim();
+            return _dbContext.Publishers.Any(p => p.Name == trimmedName
+                                                  && (excludeId == null || p.Id != excludeId));
+        }
 
     }
 }

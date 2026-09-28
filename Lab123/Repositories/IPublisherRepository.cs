@@ -10,7 +10,8 @@ namespace ThuVien_API.Repositories
         AddPublisherRequestDTO AddPublisher(AddPublisherRequestDTO addPublisherRequestDTO);
         PublisherNoIdDTO UpdatePublisherById(int id, PublisherNoIdDTO publisherNoIdDTO);
         Publisher? DeletePublisherById(int id);
-        List<BookWithAuthorAndPublisherDTO> GetBooksByPublisherId(int id); 
+        List<BookWithAuthorAndPublisherDTO> GetBooksByPublisherId(int id);
+        bool ExistsPublisherName(string name, int? excludeId = null);
 
     }
 }

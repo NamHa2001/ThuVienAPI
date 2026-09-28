@@ -35,6 +35,15 @@ namespace ThuVien_API.Controllers
         [HttpPost("add-publisher")]
         public IActionResult AddPublisher([FromBody] AddPublisherRequestDTO addPublisherRequestDTO)
         {
+            if (_publisherRepository.ExistsPublisherName(addPublisherRequestDTO.Name))
+            {
+                ModelState.AddModelError(
+                    nameof(addPublisherRequestDTO.Name),
+                    $"{nameof(addPublisherRequestDTO.Name)} đã tồn tại"
+                );
+                return BadRequest(ModelState);
+            }
+
             var publisherAdd = _publisherRepository.AddPublisher(addPublisherRequestDTO);
             return Ok(publisherAdd);
         }
@@ -42,6 +51,15 @@ namespace ThuVien_API.Controllers
         [HttpPut("update-publisher-by-id/{id}")]
         public IActionResult UpdatePublisherById(int id, [FromBody] PublisherNoIdDTO publisherDTO)
         {
+            if (_publisherRepository.ExistsPublisherName(publisherDTO.Name, id))
+            {
+                ModelState.AddModelError(
+                    nameof(publisherDTO.Name),
+                    $"{nameof(publisherDTO.Name)} đã tồn tại"
+                );
+                return BadRequest(ModelState);
+            }
+
             var publisherUpdate = _publisherRepository.UpdatePublisherById(id, publisherDTO);
 
             return Ok(publisherUpdate);
