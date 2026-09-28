@@ -18,11 +18,14 @@ namespace ThuVien_API.Controllers
         }
 
         [HttpGet("get-all-author")]
-        public IActionResult GetAllAuthor()
+        public IActionResult GetAllAuthor([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
+             [FromQuery] string? sortBy, [FromQuery] bool isAscending,
+             [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 100)
         {
-            var allAuthors = _authorRepository.GellAllAuthors();
+            var allAuthors = _authorRepository.GellAllAuthors(filterOn, filterQuery, sortBy, isAscending, pageNumber, pageSize);
             return Ok(allAuthors);
         }
+
 
         [HttpGet("get-author-by-id/{id}")]
         public IActionResult GetAuthorById(int id)

@@ -11,23 +11,38 @@ namespace ThuVien_API.Repositories
         {
             _dbContext = dbContext;
         }
-        public List<AuthorDTO> GellAllAuthors()
+        public List<AuthorDTO> GellAllAuthors(string? filterOn = null, string? filterQuery = null,
+            string? sortBy = null, bool isAscending = true, int pageNumber = 1, int pageSize = 1000)
         {
-            //Get Data From Database -Domain Model
-            var allAuthorsDomain = _dbContext.Authors.ToList();
-            //Map domain models to DTOs
-            var allAuthorDTO = new List<AuthorDTO>();
-            foreach (var authorDomain in allAuthorsDomain)
+            //Get Data From Database -Domain Model, map to DTOs
+            var allAuthors = _dbContext.Authors.Select(author => new AuthorDTO()
             {
-                allAuthorDTO.Add(new AuthorDTO()
+                Id = author.Id,
+                FullName = author.FullName
+            }).AsQueryable();
+            //filtering
+            if (string.IsNullOrWhiteSpace(filterOn) == false && string.IsNullOrWhiteSpace(filterQuery) == false)
+            {
+                if (filterOn.Equals("fullName", StringComparison.OrdinalIgnoreCase))
                 {
-                    Id = authorDomain.Id,
-                    FullName = authorDomain.FullName
-                });
+                    allAuthors = allAuthors.Where(x => x.FullName.Contains(filterQuery));
+                }
             }
-            //return DTOs
-            return allAuthorDTO;
+
+            //sorting
+            if (string.IsNullOrWhiteSpace(sortBy) == false)
+            {
+                if (sortBy.Equals("fullName", StringComparison.OrdinalIgnoreCase))
+                {
+                    allAuthors = isAscending ? allAuthors.OrderBy(x => x.FullName) : allAuthors.OrderByDescending(x => x.FullName);
+                }
+            }
+
+            //pagination
+            var skipResults = (pageNumber - 1) * pageSize;
+            return allAuthors.Skip(skipResults).Take(pageSize).ToList();
         }
+
 
         public AuthorNoIdDTO GetAuthorById(int id)
         {
