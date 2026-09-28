@@ -14,7 +14,7 @@ namespace ThuVien_API.Repositories
         }
 
         public List<BookWithAuthorAndPublisherDTO> GetAllBooks(string? filterOn = null, string? filterQuery = null,
-            string? sortBy = null, bool isAscending = true, int pageNumber = 1, int pageSize = 1000)
+             string? sortBy = null, bool isAscending = true, int pageNumber = 1, int pageSize = 1000)
         {
             var allBooks = _dbContext.Books.Select(Books => new BookWithAuthorAndPublisherDTO()
             {
@@ -36,6 +36,21 @@ namespace ThuVien_API.Repositories
                 {
                     allBooks = allBooks.Where(x => x.Title.Contains(filterQuery));
                 }
+                else if (filterOn.Equals("description", StringComparison.OrdinalIgnoreCase))
+                {
+                    allBooks = allBooks.Where(x => x.Description.Contains(filterQuery));
+                }
+                else if (filterOn.Equals("genre", StringComparison.OrdinalIgnoreCase))
+                {
+                    allBooks = allBooks.Where(x => x.Genre.Contains(filterQuery));
+                }
+                else if (filterOn.Equals("rate", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (int.TryParse(filterQuery, out var rate))
+                    {
+                        allBooks = allBooks.Where(x => x.Rate == rate);
+                    }
+                }
             }
 
             //sorting
@@ -44,6 +59,10 @@ namespace ThuVien_API.Repositories
                 if (sortBy.Equals("title", StringComparison.OrdinalIgnoreCase))
                 {
                     allBooks = isAscending ? allBooks.OrderBy(x => x.Title) : allBooks.OrderByDescending(x => x.Title);
+                }
+                else if (sortBy.Equals("rate", StringComparison.OrdinalIgnoreCase))
+                {
+                    allBooks = isAscending ? allBooks.OrderBy(x => x.Rate) : allBooks.OrderByDescending(x => x.Rate);
                 }
             }
 
