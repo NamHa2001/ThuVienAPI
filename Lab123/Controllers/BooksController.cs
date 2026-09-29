@@ -17,11 +17,13 @@ namespace ThuVien_API.Controllers
     {
         private readonly AppDbContext _dbContext;
         private readonly IBookRepository _bookRepository;
+        private readonly ILogger<BooksController> _logger;
 
-        public BooksController(AppDbContext dbContext, IBookRepository bookRepository)
+        public BooksController(AppDbContext dbContext, IBookRepository bookRepository, ILogger<BooksController> logger)
         {
             _dbContext = dbContext;
             _bookRepository = bookRepository;
+            _logger = logger;
         }
 
         [Authorize(Roles = "Read")]
@@ -30,8 +32,16 @@ namespace ThuVien_API.Controllers
              [FromQuery] string? sortBy, [FromQuery] bool isAscending,
              [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 100)
         {
+            _logger.LogInformation("GetAll Book Action method was invoked");
+
+            _logger.LogWarning("This is a warning log");
+            _logger.LogError("This is a error log");
+
             // su dung reposity pattern
             var allBooks = _bookRepository.GetAllBooks(filterOn, filterQuery, sortBy, isAscending, pageNumber, pageSize);
+
+            //debug
+            _logger.LogInformation($"Finished GetAllBook request with data {System.Text.Json.JsonSerializer.Serialize(allBooks)}");
             return Ok(allBooks);
         }
 
