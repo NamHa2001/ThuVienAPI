@@ -489,3 +489,5 @@ QUY_TAC_COMMIT.md
 CLAUDE.md
 .claude/
 *.pdf
+
+Lab123/appsettings.Development.json

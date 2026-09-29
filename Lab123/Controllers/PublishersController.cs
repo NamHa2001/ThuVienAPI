@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ThuVien_API.Data;
 using ThuVien_API.Models.DTO;
 using ThuVien_API.Repositories;
@@ -18,6 +19,7 @@ namespace ThuVien_API.Controllers
             _publisherRepository = publisherRepository;
         }
 
+        [Authorize(Roles = "Read")]
         [HttpGet("get-all-publisher")]
         public IActionResult GetAllPublisher([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
             [FromQuery] string? sortBy, [FromQuery] bool isAscending,
@@ -28,6 +30,7 @@ namespace ThuVien_API.Controllers
         }
 
 
+        [Authorize(Roles = "Read")]
         [HttpGet("get-publisher-by-id")]
         public IActionResult GetPublisherById(int id)
         {
@@ -35,6 +38,7 @@ namespace ThuVien_API.Controllers
             return Ok(publisherWithId);
         }
 
+        [Authorize(Roles = "Write")]
         [HttpPost("add-publisher")]
         public IActionResult AddPublisher([FromBody] AddPublisherRequestDTO addPublisherRequestDTO)
         {
@@ -51,6 +55,7 @@ namespace ThuVien_API.Controllers
             return Ok(publisherAdd);
         }
 
+        [Authorize(Roles = "Write")]
         [HttpPut("update-publisher-by-id/{id}")]
         public IActionResult UpdatePublisherById(int id, [FromBody] PublisherNoIdDTO publisherDTO)
         {
@@ -68,6 +73,7 @@ namespace ThuVien_API.Controllers
             return Ok(publisherUpdate);
         }
 
+        [Authorize(Roles = "Write")]
         [HttpDelete("delete-publisher-by-id/{id}")]
         public IActionResult DeletePublisherById(int id)
         {
@@ -75,6 +81,7 @@ namespace ThuVien_API.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Read")]
         [HttpGet("{id}/books")]
         public IActionResult GetBooksByPublisherId(int id)
         {

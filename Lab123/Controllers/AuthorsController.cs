@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ThuVien_API.Data;
 using ThuVien_API.Models.DTO;
 using ThuVien_API.Repositories;
@@ -17,6 +18,7 @@ namespace ThuVien_API.Controllers
             _authorRepository = authorRepository;
         }
 
+        [Authorize(Roles = "Read")]
         [HttpGet("get-all-author")]
         public IActionResult GetAllAuthor([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
              [FromQuery] string? sortBy, [FromQuery] bool isAscending,
@@ -27,6 +29,7 @@ namespace ThuVien_API.Controllers
         }
 
 
+        [Authorize(Roles = "Read")]
         [HttpGet("get-author-by-id/{id}")]
         public IActionResult GetAuthorById(int id)
         {
@@ -34,6 +37,7 @@ namespace ThuVien_API.Controllers
             return Ok(authorWithId);
         }
 
+        [Authorize(Roles = "Write")]
         [HttpPost("add-author")]
         public IActionResult AddAuthors([FromBody] AddAuthorRequestDTO addAuthorRequestDTO)
         {
@@ -41,6 +45,7 @@ namespace ThuVien_API.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Write")]
         [HttpPut("update-author-by-id/{id}")]
         public IActionResult UpdateBookById(int id, [FromBody] AuthorNoIdDTO authorDTO)
         {
@@ -48,6 +53,7 @@ namespace ThuVien_API.Controllers
             return Ok(authorUpdate);
         }
 
+        [Authorize(Roles = "Write")]
         [HttpDelete("delete-author-by-id/{id}")]
         public IActionResult DeleteBookById(int id)
         {
@@ -55,6 +61,7 @@ namespace ThuVien_API.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Read")]
         [HttpGet("{id}/books")]
         public IActionResult GetBooksByAuthorId(int id)
         {
